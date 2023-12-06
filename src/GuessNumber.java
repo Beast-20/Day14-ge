@@ -1,45 +1,42 @@
 import java.util.Scanner;
 
 public class GuessNumber {
-
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Please provide a number as a command-line argument.");
-            return;
-        }
+        Scanner scanner = new Scanner(System.in);
 
-        int N = Integer.parseInt(args[0]);
+        System.out.print("Enter the value of n: ");
+        int n = scanner.nextInt();
+
+        int N = (int) Math.pow(2, n);
+
         int low = 0;
         int high = N - 1;
+        int steps = 0;
 
-        Scanner scanner = new Scanner(System.in);
-        int steps = guessNumber(low, high, scanner);
+        while (low <= high) {
+            int guess = low + (high - low) / 2;
 
-        System.out.println("Number of steps: " + steps);
-        scanner.close();
-    }
+            System.out.print("Is your number between " + low + " and " + (high - 1) + "? (Type 'y' for Yes, 'n' for No): ");
+            String response = scanner.next().toLowerCase();
 
-    private static int guessNumber(int low, int high, Scanner scanner) {
-        if (low > high) {
-            return 0;
-        }
-
-        int mid = (low + high) / 2;
-
-        System.out.println("Is your number between " + low + " and " + high + "? (true/false)");
-        boolean response = scanner.nextBoolean();
-
-        if (response) {
-            System.out.println("Is your number between " + low + " and " + mid + "? (true/false)");
-            response = scanner.nextBoolean();
-
-            if (response) {
-                return 1 + guessNumber(low, mid - 1, scanner);
+            if (response.equals("y")) {
+                if (low == high - 1) {
+                    System.out.println("Your number is " + low + "!");
+                    System.out.println("Number of steps: " + steps);
+                    break;
+                } else {
+                    System.out.println("Intermediary number: " + guess);
+                    high = guess;
+                }
+            } else if (response.equals("n")) {
+                low = guess;  // Corrected to update low without adding 1
             } else {
-                return 1 + guessNumber(mid + 1, high, scanner);
+                System.out.println("Invalid input. Please type 'y' for Yes or 'n' for No.");
             }
-        } else {
-            return 1 + guessNumber(mid + 1, high, scanner);
+
+            steps++;
         }
+
+        scanner.close();
     }
 }
